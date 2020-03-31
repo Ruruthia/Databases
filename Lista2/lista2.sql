@@ -162,6 +162,7 @@ GO
 
 
 --Zadanie 4
+--Bazowałam na http://www.sommarskog.se/dyn-search.html#dynsql
 
 CREATE PROCEDURE dynamic_search
   @tytul varchar(300) = null,
