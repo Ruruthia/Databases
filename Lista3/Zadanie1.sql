@@ -47,7 +47,7 @@ VALUES
     (1, 'ziemniak'),
     (2, 'rower'),
     (3, 'węgiel'),
-    (4, 'niewolnik');
+    (4, 'telefon');
 SET IDENTITY_INSERT Towary OFF
 GO
 

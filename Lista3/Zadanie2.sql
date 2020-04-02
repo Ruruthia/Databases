@@ -1,6 +1,5 @@
 --Zmieniłam schemat SalaryHistory - rok był niepotrzebny w tak opisanym zadaniu,
 --zamiast SalaryNet łatwiej posługiwać się TaxPaid - wartością mówiącą ile podatku zapłacono w danym miesiącu.
---w sumie możnaby dodać jednak SalaryNet w ramach wygody odczytu
 
 DROP TABLE IF EXISTS Employees;
 GO
