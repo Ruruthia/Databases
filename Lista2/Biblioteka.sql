@@ -1,5 +1,3 @@
-USE Test;
-GO
 
 DROP TABLE IF EXISTS Wypozyczenie;
 GO
@@ -62,12 +60,12 @@ GO
 
 SET IDENTITY_INSERT Ksiazka ON
 INSERT INTO Ksiazka (Ksiazka_ID,ISBN,Tytul,Autor,Rok_Wydania,Cena) VALUES
-(1,'83-246-0279-8','Microsoft Access. Podrêcznik administratora','Helen Feddema',2006,69),
+(1,'83-246-0279-8','Microsoft Access. Podrï¿½cznik administratora','Helen Feddema',2006,69),
 (2,'83-246-0653-X','SQL Server 2005. Programowanie. Od podstaw','Robert Vieira',2007,97),
-(3,'978-83-246-0549-1','SQL Server 2005. Wyciœnij wszystko','Eric L. Brown',2007,57),
-(4,'978-83-246-1258-1','PHP, MySQL i MVC. Tworzenie witryn WWW opartych na bazie danych','W³odzimierz Gajda',2010,79),
+(3,'978-83-246-0549-1','SQL Server 2005. Wyciï¿½nij wszystko','Eric L. Brown',2007,57),
+(4,'978-83-246-1258-1','PHP, MySQL i MVC. Tworzenie witryn WWW opartych na bazie danych','Wï¿½odzimierz Gajda',2010,79),
 (5,'978-83-246-2060-9','Access 2007 PL. Seria praktyk','Andrew Unsworth',2009,39),
-(6,'978-83-246-2188-0','Czysty kod. Podrêcznik dobrego programisty','Robert C. Martin',2010,67);
+(6,'978-83-246-2188-0','Czysty kod. Podrï¿½cznik dobrego programisty','Robert C. Martin',2010,67);
 SET IDENTITY_INSERT Ksiazka OFF
 GO
 
@@ -93,8 +91,8 @@ GO
 
 SET IDENTITY_INSERT Czytelnik ON
 INSERT INTO Czytelnik (CZYTELNIK_ID,PESEL,NAZWISKO,MIASTO,DATA_URODZENIA) VALUES
-(1,'55101011111','Kowalski','Wroc³aw','1955-10-10'),
-(2,'60101033333','Maliniak','Wroc³aw','1960-10-10'),
+(1,'55101011111','Kowalski','Wrocï¿½aw','1955-10-10'),
+(2,'60101033333','Maliniak','Wrocï¿½aw','1960-10-10'),
 (3,'65120122222','Nowak','Warszawa','1965-12-01');
 SET IDENTITY_INSERT Czytelnik OFF
 GO
