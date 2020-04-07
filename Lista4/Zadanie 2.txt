@@ -1,0 +1,18 @@
+1 NF:
+
+ID - Imię - Nazwisko - Adres - Kod pocztowy - Miejscowość - Data wizyty - Godzina wizyty - Pokój - Kwota - Lekarz - Specjalizacja - Opis
+
+
+2 NF:
+
+Tabele:
+ -> Ogólna: IDWizyty - IDKlient - IDLekarz - Data - Kwota
+ -> Klient: IDKlient - Imię - Nazwisko - Adres - Kod pocztowy - Miejscowość
+ -> Wizyta: IDWizyty - Data wizyty - Godzina wizyty - Opis
+ -> Lekarz: IDLekarz - Pokój - Specjalizacja 
+
+3 NF:
+
+Trzecia postać normalna głosi, że kolumna informacyjna nie należąca do klucza nie zależy też od innej kolumny informacyjnej, nie należącej do klucza.
+Tu np możemy powiedzieć, że miejscowość zależy od kodu pocztowego, więc możemy zostawić tylko miejscowość.
+Jakbyśmy mogli założyć, że przychodnia jest podzielona na segmenty w zależności od specjalizacji to z nr. pokoju moglibyśmy wnioskować specjalizację.
