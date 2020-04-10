@@ -1,0 +1,131 @@
+START:
+1. sudo systemctl start mongod
+2. sudo systemctl status mongod
+3. mongo
+4. show dbs
+5. use Lista5
+
+STRUKTURA:
+
+1. Książka(id, tytul, autor, rok_wydania, cena, Egzemplarze[]);
+  usunęłam ISBN i Wypozyczona_Ostatni_Miesiac dla czytelności, łatwo to dodać
+
+2. Egzemplarz(id, sygnatura)
+
+3. Czytelnik(id, pesel, nazwisko, miasto, data_urodzenia, Wypozyczenia[]) - j.w. usunęłąm ostatnie wypożycznie
+
+4. Wypozyczenie(id, ksiazka_id, egzemplarz_id, liczba_dni) - j.w. usunęłam datę
+
+Książki zawierające tablice egzemplarzy i czytelnicy zawierający tablice
+wypożyczeń są eleganckie i wygodne,ale wypożyczenia mające zarówno
+id książki jak i egzemplarza już nie (w sqlu mieliśmy tylko id egzemplarza).
+Czy da się to zrobić lepiej?
+
+INSERT: (2 książki, 3 egzemplarze, 4 wypożyczenia, 2 czytelników)
+
+db.Ksiazki.insertMany(
+  [{
+  _id: 1,
+  tytul: "Ksiazka1",
+  autor: "Autor1",
+  rok_wydania: 2001,
+  cena: 100,
+  Egzemplarze: [
+  {
+    _id: 1,
+    sygnatura: "S001"
+    },
+    {
+    _id: 2,
+    sygnatura: "S002"
+    }]},
+    {
+    _id: 2,
+    tytul: "Ksiazka2",
+    autor: "Autor2",
+    rok_wydania: 2002,
+    cena: 200,
+    Egzemplarze: [
+    {
+    _id: 1,
+    sygnatura: "S003"}]
+    }]
+)
+
+db.Czytelnicy.insertMany([
+{
+_id: 1,
+nazwisko: "Nazwisko1",
+miasto: "Miasto1",
+data_urodzenia: new Date("2001-01-01"),
+Wypozyczenia: [{
+_id: 1,
+ksiazka_id: 1,
+egzemplarz_id: 1,
+liczba_dni: 11
+},
+{
+_id: 2,
+ksiazka_id: 1,
+egzemplarz_id: 2,
+liczba_dni: 22
+},
+{
+_id: 3,
+ksiazka_id: 2,
+egzemplarz_id: 1,
+liczba_dni: 33
+}]},
+{
+_id: 2,
+nazwisko: "Nazwisko2",
+miasto: "Miasto2",
+data_urodzenia: new Date("2002-02-02"),
+Wypozyczenia: [{
+_id: 1,
+ksiazka_id: 2,
+egzemplarz_id: 1,
+liczba_dni: 44
+}]}])
+
+ZAPYTANIA:
+1. Tytuł najdłużej wypożyczonej książki przez każdego użytkownika - nie takie łatwe, znalazłam tylko liczbę dni.
+
+db.Czytelnicy.aggregate(
+[
+    {$unwind : "$Wypozyczenia"},
+    {
+        "$group" : {
+            "_id" : "$_id",
+            "max_liczba_dni" : {"$max" : "$Wypozyczenia.liczba_dni"},
+        }
+    }
+]);
+
+2. Ile osób wypożyczało książkę o tytule "Ksiazka1"?
+
+var $id = db.Ksiazki.findOne({tytul: "Ksiazka1" })._id
+db.Czytelnicy.find( { 'Wypozyczenia.ksiazka_id' : $id }, { nazwisko : 1 } ).count()
+
+3.Znaleźć wypożyczenia czytelnika urodzonego po czerwcu 2001.
+
+db.Czytelnicy.find( { data_urodzenia: { $gte: new Date("2001-06-01") } }, { _id: 0, Wypozyczenia : 1 } )
+
+UAKTUALNIENIA:
+
+1. Dodać PESEL każdemu czytelnikowi (niech to będzie id*111)
+
+db.Czytelnicy.updateMany( {}, [{$set : {'pesel': {$multiply: ["$_id", 111]}}}])
+
+2. Dodać wypożyczenie dla użytkownika o id = 2
+
+{ db.Czytelnicy.update({_id:2}, {$push: { Wypozyczenia: {_id:3, ksiazka_id: 2, egzemplarz_id: 3, liczba_dni: 100}}})
+
+USUWANIE:
+
+1.Usuń Czytelnika o id = 1
+
+db.Czytelnicy.deleteOne({_id:1})
+
+ZATRZYMAJ MONGODB:
+sudo systemctl stop mongod

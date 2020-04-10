@@ -1,0 +1,68 @@
+
+Uprościłam dane do węzłów:
+1. Czytelnik (nazwisko, pesel, miasto)
+2. Egzemplarz (sygnatura)
+3. Ksiazka (tytul, autor, rok)
+oraz relacji:
+1. Czytelnik - Wypozycza(ile dni) -> Egzemplarz
+2. Egzemplarz - Jest_Egzemplarzem -> Ksiazka
+
+Przykładowy insert:
+
+CREATE (c:Czytelnik {nazwisko: 'Nazwisko1', pesel: 111, miasto:'Miasto1'})
+-[:Wypożycza {liczba_dni:11}]->
+(e:Egzemplarz{sygnatura:"S001"})
+-[:Jest_Egzemplarzem]->
+(k:Ksiazka{tytul: 'Tytul1', autor: 'Autor1', rok: 2001})
+
+Dodawanie relacji:
+
+MATCH (c:Czytelnik),(e:Egzemplarz)
+WHERE c.nazwisko = 'Nazwisko1' AND e.sygnatura = 'S002'
+CREATE (c)-[r:Wypożycza {liczba_dni:22}]->(e)
+
+MATCH (k:Ksiazka),(e:Egzemplarz)
+WHERE k.tytul = 'Tytul2' AND e.sygnatura = 'S002'
+CREATE (e)-[r:Jest_Egzemplarzem]->(k)
+
+Zapytania:
+
+1. Znajdź sygnaturę egzemplarza, który był wypożyczany przez obu Czytelników
+
+MATCH (czytelnik1 {nazwisko:'Nazwisko1'})-[:Wypożycza]->
+(e:Egzemplarz) <-[:Wypożycza]-(czytelnik2 {nazwisko: 'Nazwisko2'})
+RETURN e.sygnatura
+
+2. Znajdź książkę, która ma dwa egzemplarze
+
+MATCH(k:Ksiazka)
+WHERE size((k)<-[:Jest_Egzemplarzem]-())=2
+RETURN k.tytul
+
+3. Znajdź najdłuższy czas wypożyczania spośród wszystkich egzemplarzy
+MATCH (e:Egzemplarz)<-[r:Wypożycza]-()
+RETURN max(r.liczba_dni)
+
+Update:
+
+1. Zmień czas wypożyczenia Egzemplarza S001 przez Czytelnika2
+
+MATCH (:Czytelnik {nazwisko:'Nazwisko2'})-[r:Wypożycza]-(:Egzemplarz {sygnatura: 'S001'})
+SET r.liczba_dni = 100
+
+2. Zmień miejsce zamieszkania Czytelnika2 na Miasto1
+
+MATCH(c:Czytelnik{nazwisko:'Nazwisko2'})
+SET c.miasto = 'Miasto1'
+
+Delete:
+
+1. Usuń relację bycia egzemplarzem Ksiazki2 przez Egzemplarz2
+
+MATCH (k:Ksiazka {tytul: 'Tytul2'})<-[r:Jest_Egzemplarzem]-(e:Egzemplarz {sygnatura:'S002'})
+DELETE r
+
+Naprawa:
+MATCH (k:Ksiazka),(e:Egzemplarz)
+WHERE k.tytul = 'Tytul2' AND e.sygnatura = 'S002'
+CREATE (e)-[r:Jest_Egzemplarzem]->(k)
